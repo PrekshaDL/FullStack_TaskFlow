@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@700&display=swap');
+
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  animation: gradient 10s ease infinite;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(135deg, #0a1a2a, #0c2f4f, #19a9b6);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #a855f7;
+}
+
+.logo .highlight {
+  color: #3b82f6;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  margin: 15px 0;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #fbfcfd;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s;
+}
+
+.menu a.active,
+.menu a:hover {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  border-bottom: 1px solid #495d77;
+}
+
+.navbar-title {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.navbar-title span {
+  color: #480786;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search-bar {
+  background: #2c394e;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+/* User Management Section */
+.user-section {
+  padding: 30px;
+}
+
+.user-card {
+  background: #2c394e;
+  border-radius: 15px;
+  padding: 25px;
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #1e2a3a;
+  color: #fff;
+}
+
+.user-button {
+  background: #1976d2;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.user-button:hover {
+  background: #1565c0;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+}
+
+.user-table th {
+  background: #1e2a3a;
+}
+
+button.delete {
+  background: #d32f2f;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+button.delete:hover {
+  background: #b71c1c;
+}
+
+/* Animation */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

@@ -1,0 +1,38 @@
+<div class="container">
+  <h2>Activity Logs</h2>
+
+  <!-- Form -->
+  <form [formGroup]="logForm" (ngSubmit)="saveLog()" class="form">
+    <input type="text" placeholder="Action" formControlName="action" />
+    <input type="text" placeholder="Performed By" formControlName="performedBy" />
+    <input type="datetime-local" formControlName="timestamp" />
+
+    <button type="submit">{{ isEditing ? 'Update Log' : 'Add Log' }}</button>
+    <button type="button" *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+  </form>
+
+  <!-- Logs Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Action</th>
+        <th>Performed By</th>
+        <th>Timestamp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of logs">
+        <td>{{ log.id }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.performedBy }}</td>
+        <td>{{ log.timestamp | date:'short' }}</td>
+        <td>
+          <button (click)="editLog(log)">Edit</button>
+          <button (click)="deleteLog(log.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,82 @@
+<section>
+  <div class="box">
+    <div class="square" style="--i:0;"></div>
+    <div class="square" style="--i:1;"></div>
+    <div class="square" style="--i:2;"></div>
+    <div class="square" style="--i:3;"></div>
+    <div class="square" style="--i:4;"></div>
+    <div class="square" style="--i:5;"></div>
+
+    <div class="container">
+      <div class="form">
+        
+        <!-- Toggle Title -->
+        <h2 *ngIf="isLogin; else signupTitle">LOGIN TO TASKFLOW</h2>
+        <ng-template #signupTitle>
+          <h2>SIGN UP TO TASKFLOW</h2>
+        </ng-template>
+
+        <!-- LOGIN FORM -->
+        <form *ngIf="isLogin" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+          <div class="inputBx">
+            <i class="fas fa-user-circle"></i>
+            <input type="text" formControlName="login" required />
+            <span>Login</span>
+          </div>
+
+          <div class="inputBx password">
+            <i class="fas fa-key"></i>
+            <input [type]="passwordVisible ? 'text' : 'password'" 
+                   formControlName="password" required />
+            <span>Password</span>
+            <a href="#" class="password-control" (click)="togglePassword($event)">
+              <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </a>
+          </div>
+
+          <div class="inputBx">
+            <input type="submit" value="Log in" />
+          </div>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form *ngIf="!isLogin" [formGroup]="signupForm" (ngSubmit)="onSignup()">
+          <div class="inputBx">
+            <i class="fas fa-user"></i>
+            <input type="text" formControlName="username" required />
+            <span>Username</span>
+          </div>
+
+          <div class="inputBx">
+            <i class="fas fa-envelope"></i>
+            <input type="email" formControlName="email" required />
+            <span>Email</span>
+          </div>
+
+          <div class="inputBx password">
+            <i class="fas fa-key"></i>
+            <input [type]="signupPasswordVisible ? 'text' : 'password'" 
+                   formControlName="password" required />
+            <span>Password</span>
+            <a href="#" class="password-control" (click)="toggleSignupPassword($event)">
+              <i class="fas" [ngClass]="signupPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </a>
+          </div>
+
+          <div class="inputBx">
+            <input type="submit" value="Sign up" />
+          </div>
+        </form>
+
+        <!-- Toggle Link -->
+        <p *ngIf="isLogin">
+          Don't have an account? <a href="#" (click)="switchToSignup($event)">Sign up</a>
+        </p>
+        <p *ngIf="!isLogin">
+          Already have an account? <a href="#" (click)="switchToLogin($event)">Log in</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>

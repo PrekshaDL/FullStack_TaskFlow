@@ -1,0 +1,157 @@
+/* Layout */
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@700&display=swap');
+
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  
+  animation: gradient 10s ease infinite;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(135deg, #0a1a2a, #0c2f4f, #19a9b6);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #a855f7;
+}
+
+.logo .highlight {
+  color: #3b82f6;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  margin: 15px 0;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #fbfcfd;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s;
+}
+
+.menu a.active,
+.menu a:hover {
+  color: #fff;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #495d77;
+  
+}
+
+.navbar-title {
+  font-size: 25px;
+  font-weight: bold;
+  
+}
+
+.navbar-title span {
+  color: #480786;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search-bar {
+  background: #2c394e;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.bell-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  background: #3b82f6;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Cards Section */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 70px;
+  padding: 50px 55px;
+}
+
+.card {
+  background: #2c394e;
+  padding: 70px;
+  border-radius: 30px;
+}
+
+.card h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #fcfdff;
+}
+
+.card .value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+
+/* Projects Progress */
+.projects-progress {
+  padding: 20px 25px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+
