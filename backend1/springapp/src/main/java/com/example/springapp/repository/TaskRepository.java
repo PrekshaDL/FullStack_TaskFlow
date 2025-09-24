@@ -1,0 +1,26 @@
+package com.example.springapp.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.example.springapp.model.Task;
+
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    @Query("SELECT t FROM Task t WHERE t.status = :status")
+    List<Task> findByStatus(String status);
+
+    @Query("SELECT t FROM Task t WHERE t.priority = :priority")
+    List<Task> findByPriority(String priority);
+
+    @Query("SELECT t FROM Task t WHERE t.assignee.id = :userId")
+    List<Task> findByAssignee(Long userId);
+
+    @Query("SELECT t FROM Task t WHERE t.board.id = :boardId")
+    List<Task> findByBoard(Long boardId);
+}
+
