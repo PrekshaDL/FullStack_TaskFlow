@@ -1,0 +1,326 @@
+<!-- Admin Manage Notifications Page -->
+<div class="admin-manage-notifications">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Admin navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users-cog"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Admin Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">Manage <span class="highlight">Notifications</span></h1>
+          <p class="page-subtitle">Create, send, and manage system notifications</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadNotifications()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters and Create Section -->
+    <section class="filters-section">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-filter me-2"></i>Filter Notifications
+                </h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Filter by Type:</label>
+                      <select class="form-control" [(ngModel)]="filterType" (change)="applyFilters()">
+                        <option value="">All Types</option>
+                        <option value="INFO">INFO</option>
+                        <option value="WARNING">WARNING</option>
+                        <option value="ALERT">ALERT</option>
+                        <option value="SUCCESS">SUCCESS</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Filter by Status:</label>
+                      <select class="form-control" [(ngModel)]="filterStatus" (change)="applyFilters()">
+                        <option value="">All Status</option>
+                        <option value="unread">Unread</option>
+                        <option value="read">Read</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Search:</label>
+                      <input type="text" class="form-control" [(ngModel)]="searchKeyword" placeholder="Search notifications...">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-plus me-2"></i>Quick Actions
+                </h3>
+              </div>
+              <div class="card-body">
+                <button class="btn btn-primary w-100 mb-2" (click)="showCreateForm = !showCreateForm">
+                  <i class="fas fa-plus me-2"></i>Create New Notification
+                </button>
+                <button class="btn btn-outline-primary w-100" (click)="markAllAsRead()">
+                  <i class="fas fa-check-double me-2"></i>Mark All as Read
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Create Notification Form -->
+    <section class="create-section" *ngIf="showCreateForm">
+      <div class="container-fluid">
+        <div class="content-card mb-4">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-plus-circle me-2"></i>Create New Notification
+            </h3>
+            <button class="btn btn-sm btn-outline-secondary" (click)="showCreateForm = false">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="create()" class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Notification Title *</label>
+                  <input type="text" class="form-control" [(ngModel)]="newNotification.title" name="title" placeholder="Enter notification title" required>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Type *</label>
+                  <select class="form-control" [(ngModel)]="newNotification.type" name="type" required>
+                    <option value="">Select Type</option>
+                    <option value="INFO">INFO</option>
+                    <option value="WARNING">WARNING</option>
+                    <option value="ALERT">ALERT</option>
+                    <option value="SUCCESS">SUCCESS</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Target User ID (Optional)</label>
+                  <input type="number" class="form-control" [(ngModel)]="targetUserId" name="targetUserId" placeholder="Enter user ID for specific user">
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Priority</label>
+                  <select class="form-control" [(ngModel)]="newNotification.priority" name="priority">
+                    <option value="LOW">LOW</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="HIGH">HIGH</option>
+                    <option value="URGENT">URGENT</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label class="form-label">Message *</label>
+                  <textarea class="form-control" [(ngModel)]="newNotification.message" name="message" placeholder="Enter notification message" rows="4" required></textarea>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i>Send Notification
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+                    <i class="fas fa-undo me-2"></i>Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notifications List -->
+    <section class="notifications-section">
+      <div class="container-fluid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-bell me-2"></i>All Notifications
+            </h3>
+            <div class="card-actions">
+              <span class="badge badge-primary">{{ notifications.length }} Total</span>
+              <span class="badge badge-warning" *ngIf="getUnreadCount() > 0">{{ getUnreadCount() }} Unread</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div *ngIf="isLoading" class="loading-state">
+              <div class="spinner-border text-primary">
+                <output class="visually-hidden">Loading notifications...</output>
+              </div>
+              <p>Loading notifications...</p>
+            </div>
+            <div *ngIf="errorMessage" class="error-state">
+              <i class="fas fa-exclamation-triangle"></i>
+              <h4>Error Loading Notifications</h4>
+              <p>{{ errorMessage }}</p>
+              <button class="btn btn-outline-primary" (click)="loadNotifications()">
+                <i class="fas fa-retry me-2"></i>Try Again
+              </button>
+            </div>
+            <div *ngIf="notifications.length === 0 && !isLoading && !errorMessage" class="empty-state">
+              <i class="fas fa-bell-slash"></i>
+              <h4>No notifications found</h4>
+              <p>No notifications match your current filters. Try adjusting your search criteria or create a new notification.</p>
+            </div>
+            <div *ngIf="notifications.length > 0" class="notifications-list">
+              <div class="notification-item" *ngFor="let notification of notifications" [class.unread]="!notification.isRead">
+                <div class="notification-icon">
+                  <i class="fas fa-bell" [class]="'notification-type-' + (notification.type || 'info').toLowerCase()"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-header">
+                    <h5 class="notification-title">{{ notification.title }}</h5>
+                    <div class="notification-badges">
+                      <span class="badge notification-type-badge" [class]="'type-' + (notification.type || 'info').toLowerCase()">
+                        {{ notification.type || 'INFO' }}
+                      </span>
+                      <span class="badge notification-priority-badge" [class]="'priority-' + (notification.priority || 'medium').toLowerCase()">
+                        {{ notification.priority || 'MEDIUM' }}
+                      </span>
+                      <span class="badge notification-status-badge" [class]="notification.isRead ? 'status-read' : 'status-unread'">
+                        {{ notification.isRead ? 'Read' : 'Unread' }}
+                      </span>
+                    </div>
+                  </div>
+                  <p class="notification-message">{{ notification.message }}</p>
+                  <div class="notification-meta">
+                    <span class="notification-timestamp">
+                      <i class="fas fa-clock"></i>
+                      {{ notification.timestamp | date: 'MMM dd, yyyy HH:mm' }}
+                    </span>
+                    <span class="notification-id" *ngIf="notification.id">
+                      <i class="fas fa-hashtag"></i>
+                      ID: {{ notification.id }}
+                    </span>
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn btn-sm btn-outline-primary" (click)="markAsRead(notification)" *ngIf="!notification.isRead">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="delete(notification.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="notifications.length > 0">
+          <nav aria-label="Notifications pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

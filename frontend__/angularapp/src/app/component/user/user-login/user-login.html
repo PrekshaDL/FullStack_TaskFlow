@@ -1,0 +1,168 @@
+<!-- Login Hero Section -->
+<section class="login-hero">
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-lg-5 col-md-7 col-sm-9">
+        <div class="login-card">
+          <!-- Header -->
+          <div class="login-header text-center mb-4">
+            <div class="login-logo">
+              <i class="fas fa-tasks text-primary"></i>
+            </div>
+            <h2 class="login-title">
+              <span *ngIf="isLogin; else signupTitle">Welcome Back</span>
+              <ng-template #signupTitle>
+                <span>Join TaskFlow</span>
+              </ng-template>
+            </h2>
+            <p class="login-subtitle">
+              <span *ngIf="isLogin">Sign in to your account to continue</span>
+              <span *ngIf="!isLogin">Create your account to get started</span>
+            </p>
+          </div>
+
+          <!-- Login Form -->
+          <form *ngIf="isLogin" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+            <div class="form-group mb-3">
+              <label class="form-label">Username or Email</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
+                <input type="text" 
+                       class="form-control" 
+                       formControlName="login" 
+                       placeholder="Enter your username or email"
+                       required />
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </span>
+                <input [type]="passwordVisible ? 'text' : 'password'" 
+                       class="form-control" 
+                       formControlName="password" 
+                       placeholder="Enter your password"
+                       required />
+                <button type="button" 
+                        class="btn btn-outline-secondary password-toggle" 
+                        (click)="togglePassword($event)">
+                  <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">
+                  Remember me
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+              <i class="fas fa-sign-in-alt me-2"></i>
+              Sign In
+            </button>
+
+            <div class="text-center">
+              <a href="#" class="forgot-password">Forgot your password?</a>
+            </div>
+          </form>
+
+          <!-- Signup Form -->
+          <form *ngIf="!isLogin" [formGroup]="signupForm" (ngSubmit)="onSignup()" class="login-form">
+            <div class="form-group mb-3">
+              <label class="form-label">Full Name</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </span>
+                <input type="text" 
+                       class="form-control" 
+                       formControlName="username" 
+                       placeholder="Enter your full name"
+                       required />
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <input type="email" 
+                       class="form-control" 
+                       formControlName="email" 
+                       placeholder="Enter your email address"
+                       required />
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </span>
+                <input [type]="signupPasswordVisible ? 'text' : 'password'" 
+                       class="form-control" 
+                       formControlName="password" 
+                       placeholder="Create a strong password"
+                       required />
+                <button type="button" 
+                        class="btn btn-outline-secondary password-toggle" 
+                        (click)="toggleSignupPassword($event)">
+                  <i class="fas" [ngClass]="signupPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                <label class="form-check-label" for="agreeTerms">
+                  I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+              <i class="fas fa-user-plus me-2"></i>
+              Create Account
+            </button>
+          </form>
+
+          <!-- Toggle Section -->
+          <div class="login-footer text-center">
+            <div class="divider">
+              <span>or</span>
+            </div>
+            <p class="toggle-text">
+              <span *ngIf="isLogin">Don't have an account?</span>
+              <span *ngIf="!isLogin">Already have an account?</span>
+              <a href="#" 
+                 class="toggle-link" 
+                 (click)="isLogin ? switchToSignup($event) : switchToLogin($event)">
+                <span *ngIf="isLogin">Sign up here</span>
+                <span *ngIf="!isLogin">Sign in here</span>
+              </a>
+            </p>
+            <div class="back-to-home">
+              <a routerLink="/user-landingpage" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Home
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

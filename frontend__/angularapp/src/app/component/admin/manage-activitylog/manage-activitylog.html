@@ -1,0 +1,302 @@
+<!-- Admin Manage Activity Logs Page -->
+<div class="admin-manage-activitylogs">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users-cog"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Admin Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">Manage <span class="highlight">Activity Logs</span></h1>
+          <p class="page-subtitle">View and manage system activity logs</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadLogs()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters and Create Section -->
+    <section class="filters-section">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-filter me-2"></i>Filter Logs
+                </h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Filter by Action:</label>
+                      <select class="form-control" [(ngModel)]="filterAction" (change)="applyFilters()">
+                        <option value="">All Actions</option>
+                        <option value="LOGIN">LOGIN</option>
+                        <option value="LOGOUT">LOGOUT</option>
+                        <option value="CREATE">CREATE</option>
+                        <option value="UPDATE">UPDATE</option>
+                        <option value="DELETE">DELETE</option>
+                        <option value="ASSIGN">ASSIGN</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Filter by User:</label>
+                      <input type="text" class="form-control" [(ngModel)]="filterUser" placeholder="Search by user...">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Date Range:</label>
+                      <input type="date" class="form-control" [(ngModel)]="filterDate">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-plus me-2"></i>Quick Actions
+                </h3>
+              </div>
+              <div class="card-body">
+                <button class="btn btn-primary w-100 mb-2" (click)="showCreateForm = !showCreateForm">
+                  <i class="fas fa-plus me-2"></i>Create New Log
+                </button>
+                <button class="btn btn-outline-primary w-100" (click)="exportLogs()">
+                  <i class="fas fa-download me-2"></i>Export Logs
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Create Log Form -->
+    <section class="create-section" *ngIf="showCreateForm">
+      <div class="container-fluid">
+        <div class="content-card mb-4">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-plus-circle me-2"></i>Create New Activity Log
+            </h3>
+            <button class="btn btn-sm btn-outline-secondary" (click)="showCreateForm = false">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="create()" class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Action *</label>
+                  <select class="form-control" [(ngModel)]="newLog.action" name="action" required>
+                    <option value="">Select Action</option>
+                    <option value="LOGIN">LOGIN</option>
+                    <option value="LOGOUT">LOGOUT</option>
+                    <option value="CREATE">CREATE</option>
+                    <option value="UPDATE">UPDATE</option>
+                    <option value="DELETE">DELETE</option>
+                    <option value="ASSIGN">ASSIGN</option>
+                    <option value="COMPLETE">COMPLETE</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Performed By *</label>
+                  <input type="text" class="form-control" [(ngModel)]="newLog.performedBy" name="performedBy" placeholder="Enter user name" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" [(ngModel)]="newLog.description" name="description" placeholder="Enter log description" rows="3"></textarea>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Timestamp</label>
+                  <input type="datetime-local" class="form-control" [(ngModel)]="newLog.timestamp" name="timestamp">
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Create Log
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+                    <i class="fas fa-undo me-2"></i>Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Logs List -->
+    <section class="logs-section">
+      <div class="container-fluid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-history me-2"></i>Activity Logs
+            </h3>
+            <div class="card-actions">
+              <span class="badge badge-primary">{{ logs.length }} Total</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div *ngIf="isLoading" class="loading-state">
+              <div class="spinner-border text-primary">
+                <output class="visually-hidden">Loading logs...</output>
+              </div>
+              <p>Loading activity logs...</p>
+            </div>
+            <div *ngIf="errorMessage" class="error-state">
+              <i class="fas fa-exclamation-triangle"></i>
+              <h4>Error Loading Logs</h4>
+              <p>{{ errorMessage }}</p>
+              <button class="btn btn-outline-primary" (click)="loadLogs()">
+                <i class="fas fa-retry me-2"></i>Try Again
+              </button>
+            </div>
+            <div *ngIf="logs.length === 0 && !isLoading && !errorMessage" class="empty-state">
+              <i class="fas fa-history"></i>
+              <h4>No activity logs found</h4>
+              <p>No activity logs match your current filters. Try adjusting your search criteria or create a new log.</p>
+            </div>
+            <div *ngIf="logs.length > 0" class="logs-list">
+              <div class="log-item" *ngFor="let log of logs">
+                <div class="log-icon">
+                  <i class="fas fa-circle" [class]="'log-action-' + log.action.toLowerCase()"></i>
+                </div>
+                <div class="log-content">
+                  <div class="log-header">
+                    <h5 class="log-action">{{ log.action }}</h5>
+                    <span class="log-timestamp">{{ log.timestamp | date: 'MMM dd, yyyy HH:mm' }}</span>
+                  </div>
+                  <p class="log-description">{{ log.description || 'No description available' }}</p>
+                  <div class="log-meta">
+                    <span class="log-user">
+                      <i class="fas fa-user"></i>
+                      {{ log.performedBy }}
+                    </span>
+                    <span class="log-id">
+                      <i class="fas fa-hashtag"></i>
+                      ID: {{ log.id }}
+                    </span>
+                  </div>
+                </div>
+                <div class="log-actions">
+                  <button class="btn btn-sm btn-outline-danger" (click)="delete(log.id!)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="logs.length > 0">
+          <nav aria-label="Logs pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

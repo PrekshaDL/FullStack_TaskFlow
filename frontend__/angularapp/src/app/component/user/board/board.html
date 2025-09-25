@@ -1,0 +1,206 @@
+<!-- User Boards Page -->
+<div class="user-boards">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/user-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/projects" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>My Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>My Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/tasks" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/notifications" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/user/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/user-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="welcome-section">
+          <h1 class="welcome-title">My <span class="highlight">Boards</span></h1>
+          <p class="welcome-subtitle">Manage and organize your project boards</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadBoards()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Boards Content -->
+    <section class="boards-content">
+      <div class="container-fluid">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner-border text-primary">
+            <output class="visually-hidden">Loading boards...</output>
+          </div>
+          <p>Loading boards...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="errorMessage" class="error-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h4>Error Loading Boards</h4>
+          <p>{{ errorMessage }}</p>
+          <button class="btn btn-outline-primary" (click)="loadBoards()">
+            <i class="fas fa-retry me-2"></i>Try Again
+          </button>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="boards.length === 0 && !isLoading && !errorMessage" class="empty-state">
+          <i class="fas fa-columns"></i>
+          <h4>No Boards Found</h4>
+          <p>No boards found for your projects. Create a project first to get started with boards.</p>
+          <button class="btn btn-primary" (click)="loadBoards()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+
+        <!-- Boards Grid -->
+        <div *ngIf="boards.length > 0" class="boards-grid">
+          <div class="board-card" *ngFor="let board of boards">
+            <div class="board-header">
+              <div class="board-title-section">
+                <h3 class="board-title">{{ board.name }}</h3>
+                <span class="board-type">
+                  <i class="fas fa-columns"></i>
+                  Board
+                </span>
+              </div>
+              <div class="board-actions">
+                <button class="btn btn-sm btn-outline-primary" (click)="viewBoard(board)">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="board-body">
+              <p class="board-description">{{ board.description || 'No description available' }}</p>
+              
+              <div class="board-meta">
+                <div class="meta-item" *ngIf="board.project">
+                  <i class="fas fa-project-diagram"></i>
+                  <span>{{ board.project.name }}</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span>Created: {{ board.createdAt | date: 'MMM dd, yyyy' }}</span>
+                </div>
+              </div>
+              
+              <div class="board-stats">
+                <div class="stat">
+                  <i class="fas fa-tasks"></i>
+                  <span>{{ getBoardTaskCount(board) }} Tasks</span>
+                </div>
+                <div class="stat">
+                  <i class="fas fa-check-circle"></i>
+                  <span>{{ getCompletedTaskCount(board) }} Completed</span>
+                </div>
+                <div class="stat">
+                  <i class="fas fa-users"></i>
+                  <span>{{ getBoardMemberCount(board) }} Members</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="board-footer">
+              <div class="board-progress">
+                <div class="progress-header">
+                  <span class="progress-label">Progress</span>
+                  <span class="progress-percentage">{{ getBoardProgress(board) }}%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" [style.width.%]="getBoardProgress(board)"></div>
+                </div>
+              </div>
+              <div class="board-actions-footer">
+                <button class="btn btn-sm btn-outline-primary" (click)="viewBoardDetails(board)">
+                  <i class="fas fa-info-circle me-1"></i>Details
+                </button>
+                <button class="btn btn-sm btn-primary" (click)="openBoard(board)">
+                  <i class="fas fa-external-link-alt me-1"></i>Open
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="boards.length > 0" class="pagination-section">
+          <nav aria-label="Boards pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

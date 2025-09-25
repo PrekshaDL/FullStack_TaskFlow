@@ -1,0 +1,245 @@
+<!-- User Notifications Page -->
+<div class="user-notifications">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/user-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/projects" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>My Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>My Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/tasks" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/notifications" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+            <span class="badge" *ngIf="getUnreadCount() > 0">{{ getUnreadCount() }}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/user/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/user-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="welcome-section">
+          <h1 class="welcome-title">My <span class="highlight">Notifications</span></h1>
+          <p class="welcome-subtitle">Stay updated with your latest activities and alerts</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline-primary" (click)="markAllAsRead()" *ngIf="getUnreadCount() > 0">
+            <i class="fas fa-check-double me-2"></i>Mark All Read
+          </button>
+          <button class="btn btn-primary" (click)="loadNotifications()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Notifications Content -->
+    <section class="notifications-content">
+      <div class="container-fluid">
+        <!-- Stats Overview -->
+        <div class="notifications-stats">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-bell"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ notifications.length }}</h3>
+              <p class="stat-label">Total Notifications</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon unread">
+              <i class="fas fa-bell-slash"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ getUnreadCount() }}</h3>
+              <p class="stat-label">Unread</p>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon read">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ getReadCount() }}</h3>
+              <p class="stat-label">Read</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter and Search -->
+        <div class="notifications-filters">
+          <div class="filter-group">
+            <select class="form-select" [(ngModel)]="selectedFilter" (change)="filterNotifications()">
+              <option value="all">All Notifications</option>
+              <option value="unread">Unread Only</option>
+              <option value="read">Read Only</option>
+              <option value="info">Info</option>
+              <option value="warning">Warning</option>
+              <option value="alert">Alert</option>
+            </select>
+          </div>
+          <div class="search-group">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" 
+                     class="form-control" 
+                     placeholder="Search notifications..." 
+                     [(ngModel)]="searchTerm" 
+                     (input)="filterNotifications()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner-border text-primary">
+            <output class="visually-hidden">Loading notifications...</output>
+          </div>
+          <p>Loading notifications...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="errorMessage" class="error-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h4>Error Loading Notifications</h4>
+          <p>{{ errorMessage }}</p>
+          <button class="btn btn-outline-primary" (click)="loadNotifications()">
+            <i class="fas fa-retry me-2"></i>Try Again
+          </button>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="filteredNotifications.length === 0 && !isLoading && !errorMessage" class="empty-state">
+          <i class="fas fa-bell-slash"></i>
+          <h4>No Notifications Found</h4>
+          <p *ngIf="selectedFilter === 'all'">You don't have any notifications yet. Check back later for updates.</p>
+          <p *ngIf="selectedFilter !== 'all'">No notifications match your current filter. Try changing the filter or search term.</p>
+          <button class="btn btn-primary" (click)="clearFilters()">
+            <i class="fas fa-refresh me-2"></i>Clear Filters
+          </button>
+        </div>
+
+        <!-- Notifications List -->
+        <div *ngIf="filteredNotifications.length > 0" class="notifications-list">
+          <div class="notification-item" 
+               *ngFor="let notification of filteredNotifications" 
+               [class.unread]="!notification.isRead"
+               [class.read]="notification.isRead">
+            
+            <div class="notification-icon">
+              <div class="icon-wrapper" [ngClass]="getNotificationTypeClass(notification.type)">
+                <i [ngClass]="getNotificationIcon(notification.type)"></i>
+              </div>
+            </div>
+            
+            <div class="notification-content">
+              <div class="notification-header">
+                <h4 class="notification-title">{{ notification.title || 'General Notification' }}</h4>
+                <div class="notification-meta">
+                  <span class="notification-time">{{ notification.timestamp | date: 'MMM dd, yyyy HH:mm' }}</span>
+                  <span class="notification-type" [ngClass]="getNotificationTypeClass(notification.type)">
+                    {{ notification.type }}
+                  </span>
+                </div>
+              </div>
+              
+              <p class="notification-message">{{ notification.message }}</p>
+              
+              <div class="notification-actions">
+                <button *ngIf="!notification.isRead" 
+                        class="btn btn-sm btn-outline-primary" 
+                        (click)="markAsRead(notification)">
+                  <i class="fas fa-check me-1"></i>Mark as Read
+                </button>
+                <button class="btn btn-sm btn-outline-danger" 
+                        (click)="deleteNotification(notification.id!)">
+                  <i class="fas fa-trash me-1"></i>Delete
+                </button>
+              </div>
+            </div>
+            
+            <div class="notification-status" *ngIf="!notification.isRead">
+              <div class="unread-indicator"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="filteredNotifications.length > 0" class="pagination-section">
+          <nav aria-label="Notifications pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

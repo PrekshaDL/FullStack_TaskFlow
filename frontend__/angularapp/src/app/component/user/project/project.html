@@ -1,0 +1,198 @@
+<!-- User Projects Page -->
+<div class="user-projects">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/user-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/projects" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>My Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>My Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/tasks" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/notifications" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/user/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/user-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">My <span class="highlight">Projects</span></h1>
+          <p class="page-subtitle">Manage and track your assigned projects</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadProjects()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Projects Content -->
+    <section class="projects-content">
+      <div class="container-fluid">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner-border text-primary" aria-label="Loading projects">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p>Loading projects...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="errorMessage" class="error-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h4>Error Loading Projects</h4>
+          <p>{{ errorMessage }}</p>
+          <button class="btn btn-outline-primary" (click)="loadProjects()">
+            <i class="fas fa-retry me-2"></i>Try Again
+          </button>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="projects.length === 0 && !isLoading && !errorMessage" class="empty-state">
+          <i class="fas fa-project-diagram"></i>
+          <h4>No Projects Assigned</h4>
+          <p>You haven't been assigned to any projects yet. Contact your administrator for project assignments.</p>
+          <button class="btn btn-primary" (click)="loadProjects()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div *ngIf="projects.length > 0" class="projects-grid">
+          <div class="project-card" *ngFor="let project of projects">
+            <div class="project-header">
+              <div class="project-title-section">
+                <h3 class="project-title">{{ project.name }}</h3>
+                <span class="project-status status-{{ project.status.toLowerCase() }}">
+                  {{ project.status }}
+                </span>
+              </div>
+              <div class="project-actions">
+                <button class="btn btn-sm btn-outline-primary" (click)="viewProject(project)">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="project-body">
+              <p class="project-description">{{ project.description }}</p>
+              
+              <div class="project-meta">
+                <div class="meta-item">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span>Created: {{ project.createdAt | date: 'MMM dd, yyyy' }}</span>
+                </div>
+                <div class="meta-item">
+                  <i class="fas fa-user"></i>
+                  <span>Manager: {{ project.manager?.firstName }} {{ project.manager?.lastName }}</span>
+                </div>
+              </div>
+              
+              <div class="project-progress">
+                <div class="progress-header">
+                  <span class="progress-label">Progress</span>
+                  <span class="progress-percentage">{{ getProjectProgress(project) }}%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" [style.width.%]="getProjectProgress(project)"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="project-footer">
+              <div class="project-stats">
+                <div class="stat">
+                  <i class="fas fa-tasks"></i>
+                  <span>{{ getProjectTaskCount(project) }} Tasks</span>
+                </div>
+                <div class="stat">
+                  <i class="fas fa-check-circle"></i>
+                  <span>{{ getCompletedTaskCount(project) }} Completed</span>
+                </div>
+              </div>
+              <div class="project-actions-footer">
+                <button class="btn btn-sm btn-outline-primary" (click)="viewProjectDetails(project)">
+                  <i class="fas fa-info-circle me-1"></i>Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="projects.length > 0" class="pagination-section">
+          <nav aria-label="Projects pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

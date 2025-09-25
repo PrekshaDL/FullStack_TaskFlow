@@ -1,0 +1,192 @@
+<!-- User Tasks Page -->
+<div class="user-tasks">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/user-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/projects" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>My Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>My Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/tasks" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/notifications" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/user/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/user-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">My <span class="highlight">Tasks</span></h1>
+          <p class="page-subtitle">Manage and track your assigned tasks</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadTasks()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tasks Content -->
+    <section class="tasks-content">
+      <div class="container-fluid">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner-border text-primary">
+            <output class="visually-hidden">Loading...</output>
+          </div>
+          <p>Loading tasks...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="errorMessage" class="error-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h4>Error Loading Tasks</h4>
+          <p>{{ errorMessage }}</p>
+          <button class="btn btn-outline-primary" (click)="loadTasks()">
+            <i class="fas fa-retry me-2"></i>Try Again
+          </button>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="tasks.length === 0 && !isLoading && !errorMessage" class="empty-state">
+          <i class="fas fa-tasks"></i>
+          <h4>No Tasks Assigned</h4>
+          <p>You don't have any tasks assigned yet. Check back later or contact your project manager.</p>
+          <button class="btn btn-primary" (click)="loadTasks()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+
+        <!-- Tasks List -->
+        <div *ngIf="tasks.length > 0" class="tasks-list">
+          <div class="task-item" *ngFor="let task of tasks">
+            <div class="task-main">
+              <div class="task-header">
+                <h3 class="task-title">{{ task.title }}</h3>
+                <div class="task-badges">
+                  <span class="task-status status-{{ task.status.toLowerCase() }}">
+                    {{ task.status }}
+                  </span>
+                  <span class="task-priority priority-{{ task.priority.toLowerCase() }}">
+                    {{ task.priority }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="task-body">
+                <p class="task-description">{{ task.description }}</p>
+                
+                <div class="task-meta">
+                  <div class="meta-item" *ngIf="task.project">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>{{ task.project.name }}</span>
+                  </div>
+                  <div class="meta-item" *ngIf="task.board">
+                    <i class="fas fa-columns"></i>
+                    <span>{{ task.board.name }}</span>
+                  </div>
+                  <div class="meta-item" *ngIf="task.dueDate">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Due: {{ task.dueDate | date: 'MMM dd, yyyy' }}</span>
+                  </div>
+                  <div class="meta-item" *ngIf="task.assignee">
+                    <i class="fas fa-user"></i>
+                    <span>{{ task.assignee.firstName }} {{ task.assignee.lastName }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="task-actions">
+              <button class="btn btn-sm btn-outline-primary" (click)="viewTask(task)">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-success" 
+                      (click)="markTaskAsDone(task.id!)" 
+                      *ngIf="task.status !== 'DONE'">
+                <i class="fas fa-check"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-info" (click)="editTask(task)">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="tasks.length > 0" class="pagination-section">
+          <nav aria-label="Tasks pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

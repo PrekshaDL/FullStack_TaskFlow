@@ -1,0 +1,103 @@
+<!-- Header -->
+<header class="header" *ngIf="showHeader()">
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand" (click)="navigateToHome()" style="cursor: pointer;">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="navbar-logo me-2">
+        <span class="brand-text">Task<span class="text-primary">Flow</span></span>
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateToHome()" [class.active]="isCurrentPageHome()" style="cursor: pointer;">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="scrollToSection('features')" style="cursor: pointer;">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="scrollToSection('about')" style="cursor: pointer;">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="scrollToSection('contact')" style="cursor: pointer;">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-primary ms-2" routerLink="/user-login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary ms-2" routerLink="/admin-login">Admin</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Footer -->
+<footer class="footer bg-primary text-white" *ngIf="showFooter()">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <h5>TaskFlow</h5>
+        <p>Collaborative task management platform designed to streamline your workflow and boost productivity.</p>
+        <div class="social-links">
+          <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-white me-3"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="text-white"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6 mb-4">
+        <h6>Quick Links</h6>
+        <ul class="list-unstyled">
+          <li><a (click)="navigateToHome()" class="text-white-50" style="cursor: pointer;">Home</a></li>
+          <li><a (click)="scrollToSection('features')" class="text-white-50" style="cursor: pointer;">Features</a></li>
+          <li><a (click)="scrollToSection('about')" class="text-white-50" style="cursor: pointer;">About</a></li>
+          <li><a (click)="scrollToSection('contact')" class="text-white-50" style="cursor: pointer;">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h6>Services</h6>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white-50">Project Management</a></li>
+          <li><a href="#" class="text-white-50">Task Tracking</a></li>
+          <li><a href="#" class="text-white-50">Team Collaboration</a></li>
+          <li><a href="#" class="text-white-50">Activity Monitoring</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h6>Contact Info</h6>
+        <p class="text-white-50">
+          <i class="fas fa-envelope me-2"></i>
+          contact@taskflow.com
+        </p>
+        <p class="text-white-50">
+          <i class="fas fa-phone me-2"></i>
+          +1 (555) 123-4567
+        </p>
+        <p class="text-white-50">
+          <i class="fas fa-map-marker-alt me-2"></i>
+          New York, NY 10001
+        </p>
+      </div>
+    </div>
+    <hr class="my-4">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <p class="mb-0 text-white-50">&copy; 2024 TaskFlow. All rights reserved.</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <p class="mb-0 text-white-50">Designed by <a href="https://github.com/PrekshaDL" class="text-white">Preksha D L</a></p>
+      </div>
+    </div>
+  </div>
+</footer>

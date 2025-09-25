@@ -1,0 +1,403 @@
+<!-- Admin Manage Tasks Page -->
+<div class="admin-manage-tasks">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users-cog"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Admin Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">Manage <span class="highlight">Tasks</span></h1>
+          <p class="page-subtitle">Create, edit, and manage system tasks</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="refreshTasks()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filters and Create Section -->
+    <section class="filters-section">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-filter me-2"></i>Filter Tasks
+                </h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Filter by Status:</label>
+                      <select class="form-control" [(ngModel)]="filterStatus" (change)="applyFilters()">
+                        <option value="">All Status</option>
+                        <option value="TODO">TODO</option>
+                        <option value="IN_PROGRESS">IN_PROGRESS</option>
+                        <option value="DONE">DONE</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Filter by Priority:</label>
+                      <select class="form-control" [(ngModel)]="filterPriority" (change)="applyFilters()">
+                        <option value="">All Priority</option>
+                        <option value="LOW">LOW</option>
+                        <option value="MEDIUM">MEDIUM</option>
+                        <option value="HIGH">HIGH</option>
+                        <option value="CRITICAL">CRITICAL</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-label">Search:</label>
+                      <input type="text" class="form-control" [(ngModel)]="searchKeyword" placeholder="Search tasks...">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-plus me-2"></i>Quick Actions
+                </h3>
+              </div>
+              <div class="card-body">
+                <button class="btn btn-primary w-100 mb-2" (click)="showCreateForm = !showCreateForm">
+                  <i class="fas fa-plus me-2"></i>Create New Task
+                </button>
+                <button class="btn btn-outline-primary w-100" (click)="quickCreateTask()">
+                  <i class="fas fa-bolt me-2"></i>Quick Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Create Task Form -->
+    <section class="create-section" *ngIf="showCreateForm">
+      <div class="container-fluid">
+        <div class="content-card mb-4">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-plus-circle me-2"></i>Create New Task
+            </h3>
+            <button class="btn btn-sm btn-outline-secondary" (click)="showCreateForm = false">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="createTask()" class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Task Title *</label>
+                  <input type="text" class="form-control" [(ngModel)]="newTask.title" name="title" placeholder="Enter task title" required>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" [(ngModel)]="newTask.description" name="description" placeholder="Enter task description" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Status *</label>
+                  <select class="form-control" [(ngModel)]="newTask.status" name="status" required>
+                    <option value="TODO">TODO</option>
+                    <option value="IN_PROGRESS">IN_PROGRESS</option>
+                    <option value="DONE">DONE</option>
+                  </select>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Priority *</label>
+                  <select class="form-control" [(ngModel)]="newTask.priority" name="priority" required>
+                    <option value="LOW">LOW</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="HIGH">HIGH</option>
+                    <option value="CRITICAL">CRITICAL</option>
+                  </select>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label">Assignee ID</label>
+                      <input type="number" class="form-control" [(ngModel)]="newTask.assigneeId" name="assigneeId" placeholder="User ID">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label">Board ID</label>
+                      <input type="number" class="form-control" [(ngModel)]="newTask.boardId" name="boardId" placeholder="Board ID">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Create Task
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+                    <i class="fas fa-undo me-2"></i>Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tasks List -->
+    <section class="tasks-section">
+      <div class="container-fluid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-tasks me-2"></i>Tasks List
+            </h3>
+            <div class="card-actions">
+              <span class="badge badge-primary">{{ tasks.length }} Total</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div *ngIf="tasks.length === 0" class="empty-state">
+              <i class="fas fa-tasks"></i>
+              <h4>No tasks found</h4>
+              <p>No tasks match your current filters. Try adjusting your search criteria or create a new task.</p>
+            </div>
+            <div *ngIf="tasks.length > 0" class="tasks-table">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Description</th>
+                      <th>Status</th>
+                      <th>Priority</th>
+                      <th>Assignee</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let task of tasks" (click)="selectTask(task)" [class.selected]="selectedTask?.id === task.id">
+                      <td>
+                        <div class="task-title">{{ task.title }}</div>
+                      </td>
+                      <td>
+                        <div class="task-description">{{ task.description || 'No description' }}</div>
+                      </td>
+                      <td>
+                        <span class="badge status-{{ task.status.toLowerCase() }}">
+                          {{ task.status }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge priority-{{ task.priority.toLowerCase() }}">
+                          {{ task.priority }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="assignee-info">
+                          {{ task.assignee?.name || task.assigneeId || 'Unassigned' }}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn btn-sm btn-outline-primary" (click)="selectTask(task); $event.stopPropagation();">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-success" (click)="assignTask(task); $event.stopPropagation();">
+                            <i class="fas fa-user-plus"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-warning" (click)="markDone(task); $event.stopPropagation();">
+                            <i class="fas fa-check"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger" (click)="deleteTask(task.id); $event.stopPropagation();">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="tasks.length > 0">
+          <nav aria-label="Tasks pagination">
+            <ul class="pagination">
+              <li class="page-item" [class.disabled]="page === 0">
+                <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                  <i class="fas fa-chevron-left"></i> Previous
+                </button>
+              </li>
+              <li class="page-item active">
+                <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!-- Edit Task Modal -->
+    <div *ngIf="selectedTask" class="edit-modal">
+      <div class="modal-backdrop" (click)="selectedTask = null"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Task</h3>
+          <button class="btn-close" (click)="selectedTask = null">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="updateTask()" class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label class="form-label">Task Title *</label>
+                <input type="text" class="form-control" [(ngModel)]="editTask.title" name="editTitle" required>
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" [(ngModel)]="editTask.description" name="editDescription" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label class="form-label">Status *</label>
+                <select class="form-control" [(ngModel)]="editTask.status" name="editStatus" required>
+                  <option value="TODO">TODO</option>
+                  <option value="IN_PROGRESS">IN_PROGRESS</option>
+                  <option value="DONE">DONE</option>
+                </select>
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label">Priority *</label>
+                <select class="form-control" [(ngModel)]="editTask.priority" name="editPriority" required>
+                  <option value="LOW">LOW</option>
+                  <option value="MEDIUM">MEDIUM</option>
+                  <option value="HIGH">HIGH</option>
+                  <option value="CRITICAL">CRITICAL</option>
+                </select>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group mb-3">
+                    <label class="form-label">Assignee ID</label>
+                    <input type="number" class="form-control" [(ngModel)]="editTask.assigneeId" name="editAssigneeId">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group mb-3">
+                    <label class="form-label">Board ID</label>
+                    <input type="number" class="form-control" [(ngModel)]="editTask.boardId" name="editBoardId">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Update Task
+                </button>
+                <button type="button" class="btn btn-outline-secondary" (click)="selectedTask = null">
+                  <i class="fas fa-times me-2"></i>Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

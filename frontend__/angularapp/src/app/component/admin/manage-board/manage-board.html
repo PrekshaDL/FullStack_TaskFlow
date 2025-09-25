@@ -1,0 +1,278 @@
+<!-- Admin Manage Boards Page -->
+<div class="admin-manage-boards">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users-cog"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Admin Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">Manage <span class="highlight">Boards</span></h1>
+          <p class="page-subtitle">Create, edit, and manage project boards</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadBoards()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Quick Actions Section -->
+    <section class="quick-actions-section">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-info-circle me-2"></i>Board Management
+                </h3>
+              </div>
+              <div class="card-body">
+                <div *ngIf="isLoading" class="loading-state">
+                  <div class="spinner-border text-primary">
+                    <output class="visually-hidden">Loading boards...</output>
+                  </div>
+                  <p>Loading boards...</p>
+                </div>
+                <div *ngIf="errorMessage" class="error-state">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <h4>Error Loading Boards</h4>
+                  <p>{{ errorMessage }}</p>
+                  <button class="btn btn-outline-primary" (click)="loadBoards()">
+                    <i class="fas fa-retry me-2"></i>Try Again
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-plus me-2"></i>Quick Actions
+                </h3>
+              </div>
+              <div class="card-body">
+                <button class="btn btn-primary w-100 mb-2" (click)="showCreateForm = !showCreateForm">
+                  <i class="fas fa-plus me-2"></i>Create New Board
+                </button>
+                <button class="btn btn-outline-primary w-100" (click)="quickCreateBoard()">
+                  <i class="fas fa-bolt me-2"></i>Quick Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Create Board Form -->
+    <section class="create-section" *ngIf="showCreateForm">
+      <div class="container-fluid">
+        <div class="content-card mb-4">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-plus-circle me-2"></i>Create New Board
+            </h3>
+            <button class="btn btn-sm btn-outline-secondary" (click)="showCreateForm = false">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="createBoard()" class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Board Name *</label>
+                  <input type="text" class="form-control" [(ngModel)]="newBoard.name" name="newName" placeholder="Enter board name" required>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="form-label">Board Title *</label>
+                  <input type="text" class="form-control" [(ngModel)]="newBoard.title" name="newTitle" placeholder="Enter board title" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" [(ngModel)]="newBoard.description" name="newDescription" placeholder="Enter board description" rows="4"></textarea>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Create Board
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+                    <i class="fas fa-undo me-2"></i>Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Boards List -->
+    <section class="boards-section">
+      <div class="container-fluid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-columns me-2"></i>Boards List
+            </h3>
+            <div class="card-actions">
+              <span class="badge badge-primary">{{ boards.length }} Total</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div *ngIf="boards.length === 0 && !isLoading && !errorMessage" class="empty-state">
+              <i class="fas fa-columns"></i>
+              <h4>No boards found</h4>
+              <p>No boards have been created yet. Create your first board to get started.</p>
+            </div>
+            <div *ngIf="boards.length > 0" class="boards-grid">
+              <div class="board-card" *ngFor="let board of boards" (click)="selectBoard(board)" [class.selected]="selectedBoard?.id === board.id">
+                <div class="board-header">
+                  <div class="board-title-section">
+                    <h5 class="board-title">{{ board.name }}</h5>
+                    <span class="board-subtitle">{{ board.title }}</span>
+                  </div>
+                  <div class="board-actions">
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteBoard(board.id!); $event.stopPropagation();">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="board-body">
+                  <p class="board-description">{{ board.description || 'No description available' }}</p>
+                  <div class="board-meta">
+                    <div class="meta-item">
+                      <i class="fas fa-calendar-alt"></i>
+                      <span>Created: {{ board.createdAt | date: 'MMM dd, yyyy' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Edit Board Modal -->
+    <div *ngIf="selectedBoard" class="edit-modal">
+      <div class="modal-backdrop" (click)="selectedBoard = null"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Board</h3>
+          <button class="btn-close" (click)="selectedBoard = null">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="updateBoard()" class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label class="form-label">Board Name *</label>
+                <input type="text" class="form-control" [(ngModel)]="editBoard.name" name="name" required>
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-label">Board Title *</label>
+                <input type="text" class="form-control" [(ngModel)]="editBoard.title" name="title" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" [(ngModel)]="editBoard.description" name="description" rows="4"></textarea>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Update Board
+                </button>
+                <button type="button" class="btn btn-outline-secondary" (click)="selectedBoard = null">
+                  <i class="fas fa-times me-2"></i>Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

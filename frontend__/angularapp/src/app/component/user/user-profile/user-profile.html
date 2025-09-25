@@ -1,0 +1,327 @@
+<!-- User Profile Page -->
+<div class="user-profile">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/user-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/projects" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>My Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>My Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/tasks" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>My Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/user/notifications" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/user/profile" class="profile-link active">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/user-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="welcome-section">
+          <h1 class="welcome-title">My <span class="highlight">Profile</span></h1>
+          <p class="welcome-subtitle">Manage your account settings and personal information</p>
+        </div>
+        <div class="header-actions">
+          <button 
+            *ngIf="!isEditing" 
+            (click)="toggleEdit()" 
+            class="btn btn-primary">
+            <i class="fas fa-edit me-2"></i>Edit Profile
+          </button>
+          <div *ngIf="isEditing" class="edit-actions">
+            <button (click)="saveProfile()" class="btn btn-success" [disabled]="isLoading">
+              <i class="fas fa-save me-2"></i>{{ isLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+            <button (click)="cancelEdit()" class="btn btn-outline-secondary">
+              <i class="fas fa-times me-2"></i>Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Profile Content -->
+    <section class="profile-content">
+      <div class="container-fluid">
+        <!-- Loading State -->
+        <div *ngIf="isLoading && !isEditing" class="loading-state">
+          <div class="spinner-border text-primary">
+            <output class="visually-hidden">Loading profile...</output>
+          </div>
+          <p>Loading profile...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="successMessage" class="alert alert-success">
+          <i class="fas fa-check-circle me-2"></i>
+          {{ successMessage }}
+        </div>
+
+        <!-- Profile Content -->
+        <div *ngIf="!isLoading || isEditing" class="profile-layout">
+          <!-- Profile Card -->
+          <div class="profile-card">
+            <div class="profile-avatar">
+              <div class="avatar-circle">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="avatar-actions" *ngIf="isEditing">
+                <button class="btn btn-sm btn-outline-primary">
+                  <i class="fas fa-camera me-1"></i>Change Photo
+                </button>
+              </div>
+            </div>
+            
+            <div class="profile-info">
+              <h2 class="profile-name">{{ user.name || 'User Name' }}</h2>
+              <p class="profile-email">{{ user.email || 'user@example.com' }}</p>
+              <div class="profile-role">
+                <span class="role-badge" [ngClass]="'role-' + (user.role || 'user').toLowerCase()">
+                  {{ user.role }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Form -->
+          <div class="profile-form-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-user-edit me-2"></i>
+                Personal Information
+              </h3>
+            </div>
+            
+            <div class="card-body">
+              <form class="profile-form">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="name" class="form-label">
+                        <i class="fas fa-user me-1"></i>Full Name
+                      </label>
+                      <input 
+                        type="text" 
+                        id="name" 
+                        [(ngModel)]="user.name" 
+                        [readonly]="!isEditing"
+                        class="form-control"
+                        placeholder="Enter your full name"
+                        name="name">
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="email" class="form-label">
+                        <i class="fas fa-envelope me-1"></i>Email Address
+                      </label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        [(ngModel)]="user.email" 
+                        [readonly]="!isEditing"
+                        class="form-control"
+                        placeholder="Enter your email address"
+                        name="email">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="role" class="form-label">
+                        <i class="fas fa-user-tag me-1"></i>Role
+                      </label>
+                      <input 
+                        type="text" 
+                        id="role" 
+                        [value]="user.role" 
+                        readonly
+                        class="form-control readonly">
+                      <div class="form-text">Role cannot be changed</div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="memberSince" class="form-label">
+                        <i class="fas fa-calendar me-1"></i>Member Since
+                      </label>
+                      <input 
+                        type="text" 
+                        id="memberSince" 
+                        value="January 2024"
+                        readonly
+                        class="form-control readonly">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" *ngIf="isEditing">
+                  <label for="bio" class="form-label">
+                    <i class="fas fa-info-circle me-1"></i>Bio
+                  </label>
+                  <textarea 
+                    id="bio" 
+                    class="form-control"
+                    rows="3"
+                    placeholder="Tell us about yourself..."></textarea>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Statistics Cards -->
+          <div class="stats-section">
+            <h3 class="section-title">
+              <i class="fas fa-chart-bar me-2"></i>Your Statistics
+            </h3>
+            
+            <div class="stats-grid">
+              <div class="stat-card" *ngIf="user.projects">
+                <div class="stat-icon">
+                  <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="stat-content">
+                  <h4 class="stat-number">{{ user.projects.length }}</h4>
+                  <p class="stat-label">Projects</p>
+                </div>
+              </div>
+              
+              <div class="stat-card" *ngIf="user.tasks">
+                <div class="stat-icon">
+                  <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-content">
+                  <h4 class="stat-number">{{ user.tasks.length }}</h4>
+                  <p class="stat-label">Tasks</p>
+                </div>
+              </div>
+              
+              <div class="stat-card" *ngIf="user.notifications">
+                <div class="stat-icon">
+                  <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-content">
+                  <h4 class="stat-number">{{ user.notifications.length }}</h4>
+                  <p class="stat-label">Notifications</p>
+                </div>
+              </div>
+              
+              <div class="stat-card" *ngIf="user.activityLogs">
+                <div class="stat-icon">
+                  <i class="fas fa-history"></i>
+                </div>
+                <div class="stat-content">
+                  <h4 class="stat-number">{{ user.activityLogs.length }}</h4>
+                  <p class="stat-label">Activity Logs</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="activity-section">
+            <h3 class="section-title">
+              <i class="fas fa-clock me-2"></i>Recent Activity
+            </h3>
+            
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="activity-content">
+                  <h5 class="activity-title">Logged in</h5>
+                  <p class="activity-description">You logged into your account</p>
+                  <span class="activity-time">2 hours ago</span>
+                </div>
+              </div>
+              
+              <div class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-tasks"></i>
+                </div>
+                <div class="activity-content">
+                  <h5 class="activity-title">Task Completed</h5>
+                  <p class="activity-description">Completed "Dashboard UI Design" task</p>
+                  <span class="activity-time">4 hours ago</span>
+                </div>
+              </div>
+              
+              <div class="activity-item">
+                <div class="activity-icon">
+                  <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="activity-content">
+                  <h5 class="activity-title">Project Updated</h5>
+                  <p class="activity-description">Updated "TaskFlow App" project</p>
+                  <span class="activity-time">1 day ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+

@@ -1,0 +1,299 @@
+<!-- Admin User Management Page -->
+<div class="admin-user-management">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Manage Notifications</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">User <span class="highlight">Management</span></h1>
+          <p class="page-subtitle">Manage users, roles, and permissions</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="loadUsers()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh Users
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- User Management Content -->
+    <section class="user-management-content">
+      <div class="container-fluid">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner-border text-primary">
+            <output class="visually-hidden">Loading users...</output>
+          </div>
+          <p>Loading users...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ errorMessage }}
+        </div>
+
+        <!-- User Management Layout -->
+        <div *ngIf="!isLoading" class="user-management-layout">
+          <!-- User Form Section -->
+          <div class="user-form-section">
+            <div class="form-card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-user-edit me-2"></i>
+                  {{ selectedUser ? 'Edit User' : 'Create New User' }}
+                </h3>
+              </div>
+              
+              <div class="card-body">
+                <form (ngSubmit)="selectedUser ? updateUser() : createUser()" class="user-form">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="name" class="form-label">
+                          <i class="fas fa-user me-1"></i>Full Name
+                        </label>
+                        <input 
+                          type="text" 
+                          id="name" 
+                          [ngModel]="selectedUser ? editUser.name : newUser.name" 
+                          (ngModelChange)="selectedUser ? (editUser.name = $event) : (newUser.name = $event)"
+                          name="name"
+                          class="form-control"
+                          placeholder="Enter full name"
+                          required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="email" class="form-label">
+                          <i class="fas fa-envelope me-1"></i>Email Address
+                        </label>
+                        <input 
+                          type="email" 
+                          id="email" 
+                          [ngModel]="selectedUser ? editUser.email : newUser.email" 
+                          (ngModelChange)="selectedUser ? (editUser.email = $event) : (newUser.email = $event)"
+                          name="email"
+                          class="form-control"
+                          placeholder="Enter email address"
+                          required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="password" class="form-label">
+                          <i class="fas fa-lock me-1"></i>Password
+                        </label>
+                        <input 
+                          type="password" 
+                          id="password" 
+                          [ngModel]="selectedUser ? editUser.password : newUser.password" 
+                          (ngModelChange)="selectedUser ? (editUser.password = $event) : (newUser.password = $event)"
+                          name="password"
+                          class="form-control"
+                          placeholder="Enter password"
+                          [required]="!selectedUser">
+                        <div class="form-text" *ngIf="selectedUser">Leave blank to keep current password</div>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="role" class="form-label">
+                          <i class="fas fa-user-tag me-1"></i>Role
+                        </label>
+                        <select 
+                          id="role" 
+                          [ngModel]="selectedUser ? editUser.role : newUser.role" 
+                          (ngModelChange)="selectedUser ? (editUser.role = $event) : (newUser.role = $event)"
+                          name="role"
+                          class="form-control">
+                          <option value="USER">User</option>
+                          <option value="ADMIN">Admin</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success" [disabled]="isLoading">
+                      <i class="fas fa-save me-2"></i>
+                      {{ selectedUser ? 'Update User' : 'Create User' }}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()" *ngIf="selectedUser">
+                      <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Users Table Section -->
+          <div class="users-table-section">
+            <div class="table-card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-users me-2"></i>
+                  All Users
+                </h3>
+                <div class="table-actions">
+                  <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search users..." class="search-input">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="users-table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let user of users" class="user-row">
+                        <td class="user-id">{{ user.id }}</td>
+                        <td class="user-name">
+                          <div class="user-info">
+                            <div class="user-avatar">
+                              <i class="fas fa-user"></i>
+                            </div>
+                            <span>{{ user.name }}</span>
+                          </div>
+                        </td>
+                        <td class="user-email">{{ user.email }}</td>
+                        <td class="user-role">
+                          <span class="role-badge" [ngClass]="'role-' + (user.role || 'user').toLowerCase()">
+                            {{ user.role }}
+                          </span>
+                        </td>
+                        <td class="user-status">
+                          <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td class="user-actions">
+                          <button class="btn btn-sm btn-outline-primary" (click)="selectUser(user)">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user.id!)">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-section">
+                  <nav aria-label="Users pagination">
+                    <ul class="pagination">
+                      <li class="page-item" [class.disabled]="page === 0">
+                        <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                          <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                      </li>
+                      <li class="page-item active">
+                        <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+                      </li>
+                      <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                        <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                          Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

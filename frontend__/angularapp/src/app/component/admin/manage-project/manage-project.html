@@ -1,0 +1,300 @@
+<!-- Admin Project Management Page -->
+<div class="admin-project-management">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin-dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Manage Notifications</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">Project <span class="highlight">Management</span></h1>
+          <p class="page-subtitle">Manage projects, assignments, and status</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline-primary" (click)="quickCreateProject()">
+            <i class="fas fa-plus me-2"></i>Quick Create
+          </button>
+          <button class="btn btn-primary" (click)="loadProjects()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Project Management Content -->
+    <section class="project-management-content">
+      <div class="container-fluid">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner-border text-primary">
+            <output class="visually-hidden">Loading projects...</output>
+          </div>
+          <p>Loading projects...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Project Management Layout -->
+        <div *ngIf="!isLoading" class="project-management-layout">
+          <!-- Project Form Section -->
+          <div class="project-form-section">
+            <div class="form-card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-project-diagram me-2"></i>
+                  {{ selectedProject ? 'Edit Project' : 'Create New Project' }}
+                </h3>
+              </div>
+              
+              <div class="card-body">
+                <form (ngSubmit)="selectedProject ? updateProject() : createProject()" class="project-form">
+                  <div class="form-group">
+                    <label for="name" class="form-label">
+                      <i class="fas fa-tag me-1"></i>Project Name
+                    </label>
+                    <input 
+                      type="text" 
+                      id="name" 
+                      [ngModel]="selectedProject ? editProject.name : newProject.name" 
+                      (ngModelChange)="selectedProject ? (editProject.name = $event) : (newProject.name = $event)"
+                      name="name"
+                      class="form-control"
+                      placeholder="Enter project name"
+                      required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description" class="form-label">
+                      <i class="fas fa-align-left me-1"></i>Description
+                    </label>
+                    <textarea 
+                      id="description" 
+                      [ngModel]="selectedProject ? editProject.description : newProject.description" 
+                      (ngModelChange)="selectedProject ? (editProject.description = $event) : (newProject.description = $event)"
+                      name="description"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Enter project description"></textarea>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="status" class="form-label">
+                          <i class="fas fa-flag me-1"></i>Status
+                        </label>
+                        <select 
+                          id="status" 
+                          [ngModel]="selectedProject ? editProject.status : newProject.status" 
+                          (ngModelChange)="selectedProject ? (editProject.status = $event) : (newProject.status = $event)"
+                          name="status"
+                          class="form-control">
+                          <option value="PLANNED">Planned</option>
+                          <option value="IN_PROGRESS">In Progress</option>
+                          <option value="COMPLETED">Completed</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="ownerId" class="form-label">
+                          <i class="fas fa-user me-1"></i>Owner ID
+                        </label>
+                        <input 
+                          type="number" 
+                          id="ownerId" 
+                          [ngModel]="selectedProject ? editProject.ownerId : newProject.ownerId" 
+                          (ngModelChange)="selectedProject ? (editProject.ownerId = $event) : (newProject.ownerId = $event)"
+                          name="ownerId"
+                          class="form-control"
+                          placeholder="Enter owner user ID">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success" [disabled]="isLoading">
+                      <i class="fas fa-save me-2"></i>
+                      {{ selectedProject ? 'Update Project' : 'Create Project' }}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" (click)="selectedProject = null" *ngIf="selectedProject">
+                      <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Projects Table Section -->
+          <div class="projects-table-section">
+            <div class="table-card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-list me-2"></i>
+                  All Projects
+                </h3>
+                <div class="table-actions">
+                  <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search projects..." class="search-input">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="projects-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Owner</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let project of projects" 
+                          class="project-row" 
+                          (click)="selectProject(project)" 
+                          [class.selected]="selectedProject?.id === project.id">
+                        <td class="project-name">
+                          <div class="project-info">
+                            <div class="project-icon">
+                              <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <span>{{ project.name }}</span>
+                          </div>
+                        </td>
+                        <td class="project-description">
+                          {{ project.description || 'No description' }}
+                        </td>
+                        <td class="project-status">
+                          <span class="status-badge" [ngClass]="'status-' + (project.status || 'planned').toLowerCase()">
+                            {{ project.status }}
+                          </span>
+                        </td>
+                        <td class="project-owner">
+                          {{ project.owner?.name || project.ownerId || 'Unassigned' }}
+                        </td>
+                        <td class="project-actions" (click)="$event.stopPropagation()">
+                          <button class="btn btn-sm btn-outline-primary" (click)="selectProject(project)">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-info" (click)="assignProject(project)">
+                            <i class="fas fa-user-plus"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger" (click)="deleteProject(project.id!)">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-section">
+                  <nav aria-label="Projects pagination">
+                    <ul class="pagination">
+                      <li class="page-item" [class.disabled]="page === 0">
+                        <button class="page-link" (click)="setPage(page-1)" [disabled]="page === 0">
+                          <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                      </li>
+                      <li class="page-item active">
+                        <span class="page-link">Page {{ page + 1 }} of {{ totalPages }}</span>
+                      </li>
+                      <li class="page-item" [class.disabled]="page + 1 >= totalPages">
+                        <button class="page-link" (click)="setPage(page+1)" [disabled]="page + 1 >= totalPages">
+                          Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

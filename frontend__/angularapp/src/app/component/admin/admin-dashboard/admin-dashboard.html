@@ -1,0 +1,334 @@
+<!-- Admin Dashboard -->
+<div class="admin-dashboard">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/Preksha_Icon-removebg-preview.png" alt="Preksha Icon" class="sidebar-logo me-2">
+        Task<span class="highlight">Flow</span>
+      </div>
+      <div class="admin-badge">
+        <i class="fas fa-shield-alt"></i>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-user" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-users-cog"></i>
+            <span>Manage Users</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-project" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-project-diagram"></i>
+            <span>Manage Projects</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-board" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-columns"></i>
+            <span>Manage Boards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-task" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Manage Tasks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-activitylog" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-history"></i>
+            <span>Activity Logs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/admin/manage-notification" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/admin/profile" class="profile-link">
+        <i class="fas fa-user-circle"></i>
+        <span>Admin Profile</span>
+      </a>
+      <a routerLink="/admin-login" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="page-title-section">
+          <h1 class="page-title">Admin <span class="highlight">Dashboard</span></h1>
+          <p class="page-subtitle">System overview and management controls</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="refreshDashboard()">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Overview -->
+    <section class="stats-overview">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-project-diagram"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">{{ projectsCount }}</h3>
+                <p class="stat-label">Total Projects</p>
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +{{ projectsGrowth }}% this month
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">{{ totalTasks }}</h3>
+                <p class="stat-label">Total Tasks</p>
+                <span class="stat-change positive">
+                  <i class="fas fa-check-circle"></i> {{ taskCompletionRate }}% completed
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-columns"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">{{ boardsCount }}</h3>
+                <p class="stat-label">Active Boards</p>
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +{{ boardsGrowth }}% this week
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="stat-content">
+                <h3 class="stat-number">{{ activityLogsCount }}</h3>
+                <p class="stat-label">Activity Logs</p>
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +{{ activityGrowth }}% today
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <section class="dashboard-content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Left Column -->
+          <div class="col-lg-8">
+            <!-- Recent Projects -->
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-project-diagram me-2"></i>Recent Projects
+                </h3>
+                <a routerLink="/admin/manage-project" class="btn btn-sm btn-outline-primary">View All</a>
+              </div>
+              <div class="card-body">
+                <div *ngIf="recentProjects.length === 0" class="empty-state">
+                  <i class="fas fa-project-diagram"></i>
+                  <h4>No projects found</h4>
+                  <p>No projects have been created yet. Create your first project to get started.</p>
+                </div>
+                <div *ngIf="recentProjects.length > 0" class="project-grid">
+                  <div class="project-card" *ngFor="let project of recentProjects.slice(0, 4)">
+                    <div class="project-header">
+                      <h5 class="project-title">{{ project.name }}</h5>
+                      <span class="project-status status-{{ project.status.toLowerCase() }}">
+                        {{ project.status }}
+                      </span>
+                    </div>
+                    <p class="project-description">{{ project.description }}</p>
+                    <div class="project-progress">
+                      <div class="progress">
+                        <div class="progress-bar" [style.width.%]="getProjectProgress(project)"></div>
+                      </div>
+                      <span class="progress-text">{{ getProjectProgress(project) }}% Complete</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Tasks -->
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-tasks me-2"></i>Recent Tasks
+                </h3>
+                <a routerLink="/admin/manage-task" class="btn btn-sm btn-outline-primary">View All</a>
+              </div>
+              <div class="card-body">
+                <div *ngIf="recentTasks.length === 0" class="empty-state">
+                  <i class="fas fa-tasks"></i>
+                  <h4>No tasks found</h4>
+                  <p>No tasks have been created yet. Create your first task to get started.</p>
+                </div>
+                <div *ngIf="recentTasks.length > 0" class="task-list">
+                  <div class="task-item" *ngFor="let task of recentTasks.slice(0, 5)">
+                    <div class="task-info">
+                      <h5 class="task-title">{{ task.title }}</h5>
+                      <p class="task-description">{{ task.description }}</p>
+                      <div class="task-meta">
+                        <span class="task-status status-{{ task.status.toLowerCase() }}">
+                          {{ task.status }}
+                        </span>
+                        <span class="task-priority priority-{{ task.priority.toLowerCase() }}">
+                          {{ task.priority }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="task-actions">
+                      <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="col-lg-4">
+            <!-- Notifications -->
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-bell me-2"></i>Notifications
+                </h3>
+                <span class="badge" *ngIf="adminNotifications.length > 0">{{ adminNotifications.length }}</span>
+              </div>
+              <div class="card-body">
+                <div *ngIf="adminNotifications.length === 0" class="empty-state">
+                  <i class="fas fa-bell-slash"></i>
+                  <h4>No new notifications</h4>
+                  <p>You're all caught up! Check back later for updates.</p>
+                </div>
+                <div *ngIf="adminNotifications.length > 0" class="notification-list">
+                  <div class="notification-item" *ngFor="let notification of adminNotifications.slice(0, 5)">
+                    <div class="notification-icon">
+                      <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="notification-content">
+                      <p class="notification-message">{{ notification.message }}</p>
+                      <span class="notification-time">{{ notification.timestamp | date: 'short' }}</span>
+                    </div>
+                    <div class="notification-status" [class.read]="notification.isRead">
+                      <i class="fas fa-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-history me-2"></i>Recent Activity
+                </h3>
+                <a routerLink="/admin/manage-activitylog" class="btn btn-sm btn-outline-primary">View All</a>
+              </div>
+              <div class="card-body">
+                <div *ngIf="adminActivityLogs.length === 0" class="empty-state">
+                  <i class="fas fa-history"></i>
+                  <h4>No recent activity</h4>
+                  <p>System activities will appear here.</p>
+                </div>
+                <div *ngIf="adminActivityLogs.length > 0" class="activity-list">
+                  <div class="activity-item" *ngFor="let log of adminActivityLogs.slice(0, 5)">
+                    <div class="activity-icon">
+                      <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                      <p class="activity-text">
+                        <strong>{{ log.action }}</strong>: {{ log.description }}
+                      </p>
+                      <span class="activity-time">{{ log.timestamp | date: 'short' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="content-card mb-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h3>
+              </div>
+              <div class="card-body">
+                <div class="quick-actions">
+                  <a routerLink="/admin/manage-user" class="quick-action-item">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add New User</span>
+                  </a>
+                  <a routerLink="/admin/manage-project" class="quick-action-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Create Project</span>
+                  </a>
+                  <a routerLink="/admin/manage-task" class="quick-action-item">
+                    <i class="fas fa-tasks"></i>
+                    <span>Assign Task</span>
+                  </a>
+                  <a routerLink="/admin/manage-notification" class="quick-action-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Send Notification</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
